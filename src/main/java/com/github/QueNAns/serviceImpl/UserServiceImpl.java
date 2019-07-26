@@ -51,7 +51,8 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public int signUp(User user) {		
 		//Encryption of password
-		String sql = "insert into user (FIRSTNAME, LASTNAME, EMAIL_ADDRESS, PASSWORD) values (?,?,?,?)";
+		String sql = "insert into user (FIRSTNAME, LASTNAME, EMAIL_ADDRESS, PASSWORD, SQ_ID, SQ_ANSWER) "
+				+ "values (?,?,?,?,?,?)";
 		return jdbcTemplate.execute(sql, new PreparedStatementCallback<Integer>() {
 
 			@Override
@@ -60,6 +61,8 @@ public class UserServiceImpl implements UserService{
 				ps.setString(2, user.getLastName());
 				ps.setString(3, user.getEmailAddress());
 				ps.setString(4, user.getPassword());
+				ps.setLong(5, user.getSq_id());
+				ps.setString(6, user.getSq_answer());
 				
 				return ps.executeUpdate();
 			}
