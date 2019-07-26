@@ -1,11 +1,13 @@
 package com.github.QueNAns.controller;
 
 import java.util.List;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.QueNAns.model.Answer;
 import com.github.QueNAns.model.Question;
 import com.github.QueNAns.model.User;
+import com.github.QueNAns.service.AnswerService;
+import com.github.QueNAns.service.QuestionService;
 import com.github.QueNAns.service.UserService;
 
 @RestController
@@ -23,6 +27,8 @@ public class UserController {
 
 	@Autowired(required=true)
 	UserService userService;
+	QuestionService queService;
+	AnswerService ansService;
 	
 	@CrossOrigin("*")
 	@GetMapping("/login/{emailAddress}/{password}")
@@ -178,6 +184,32 @@ public class UserController {
 	@PutMapping("/updatePassword")
 	public ResponseEntity<Integer> updatePassword(@RequestBody User user){
 		int response = userService.updateUserPassword(user);
+		
+		if(response > 0) {
+			return ResponseEntity.status(HttpStatus.OK).body(response);
+		}
+		else {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+		}
+	}
+	
+	@CrossOrigin("*")
+	@DeleteMapping("/deleteUser/{userid}")
+	public ResponseEntity<Integer> deleteUser(@PathVariable long userid){
+		Random randNum = new Random();
+		
+		double randNumber = randNum.nextDouble();
+		
+		System.out.println(randNumber);
+		int number = (int) (randNumber*100); 
+		System.out.println(number);
+		
+		String randomNumber = String.valueOf(number);
+		
+		queService.updateDeleteUserQuestions(userid, randomNumber);
+		ansService.updateDeletedUserAnswers(userid, randomNumber);
+		
+		int response = userService.deleteUser(userid);
 		
 		if(response > 0) {
 			return ResponseEntity.status(HttpStatus.OK).body(response);

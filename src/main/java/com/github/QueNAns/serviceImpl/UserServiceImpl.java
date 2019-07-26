@@ -247,6 +247,4 @@ public class UserServiceImpl implements UserService{
 		String sql = "DELETE FROM USERS WHERE USER_ID='"+userid+"'";
 		return jdbcTemplate.queryForObject(sql, Integer.class);
 	}
-
-	
-	}
+}
